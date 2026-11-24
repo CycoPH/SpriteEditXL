@@ -1,0 +1,53 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="SpriteEditXL.UI.HelpDialog"
+        Title="Help — Keyboard shortcuts"
+        Width="620" Height="560" WindowStartupLocation="CenterOwner">
+    <Grid RowDefinitions="*,Auto" Margin="12">
+        <ScrollViewer Grid.Row="0">
+            <Grid ColumnDefinitions="*,*">
+                <StackPanel Grid.Column="0" Spacing="4">
+                    <TextBlock FontWeight="Bold" Text="Colors and tools"/>
+                    <TextBlock Text="0 or ~  — Background color"/>
+                    <TextBlock Text="1 — C0"/>
+                    <TextBlock Text="2 — C1"/>
+                    <TextBlock Text="3 — C0 OR C1"/>
+                    <TextBlock Text="4 — C2"/>
+                    <TextBlock Text="5 — C3"/>
+                    <TextBlock Text="6 — C2 OR C3"/>
+                    <TextBlock Text="[  — Copy colors"/>
+                    <TextBlock Text="]  — Paste colors"/>
+                    <TextBlock Text="Shift+[  — Copy DLI list"/>
+                    <TextBlock Text="Shift+]  — Paste DLI list"/>
+                    <TextBlock Text="+ / −  — Zoom in / out"/>
+                    <TextBlock Text="Alt (hold)  — Row gutter (±)"/>
+                    <TextBlock Text="Shift+Left click — Draw background"/>
+                    <TextBlock Text="Right click — Draw background"/>
+                    <TextBlock Text="O — Toggle OR draws outside"/>
+                    <TextBlock Text="W — Toggle wrap editor"/>
+                    <TextBlock Text="M — Toggle active region marker"/>
+                    <TextBlock Text="G — Toggle grid"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Spacing="4">
+                    <TextBlock FontWeight="Bold" Text="Frames and files"/>
+                    <TextBlock Text="Space — Play / Stop"/>
+                    <TextBlock Text="←/→ — Previous/Next frame"/>
+                    <TextBlock Text="↑/↓ — DLI row navigation"/>
+                    <TextBlock Text="Home/End — First/Last frame"/>
+                    <TextBlock Text="Ctrl+C — Copy frame"/>
+                    <TextBlock Text="Ctrl+V — Paste frame"/>
+                    <TextBlock Text="Insert — Add frame"/>
+                    <TextBlock Text="Delete — Delete frame"/>
+                    <TextBlock Text="Ctrl+Z — Undo"/>
+                    <TextBlock Text="Ctrl+Y — Redo"/>
+                    <TextBlock Text="Ctrl+E — Export dialog"/>
+                    <TextBlock Text="Esc — Close dialogs"/>
+                    <TextBlock Text="Ctrl+O — Open sprite file"/>
+                    <TextBlock Text="Ctrl+S — Save sprite to file"/>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+        <Button Grid.Row="1" Content="Close" HorizontalAlignment="Right" IsCancel="True" IsDefault="True"
+                Click="OnClose"/>
+    </Grid>
+</Window>

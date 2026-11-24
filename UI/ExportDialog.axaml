@@ -1,0 +1,52 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="SpriteEditXL.UI.ExportDialog"
+        Title="Export" Width="860" Height="640"
+        WindowStartupLocation="CenterOwner">
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="12">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8">
+            <TextBlock Text="Template:" VerticalAlignment="Center"/>
+            <ComboBox x:Name="TemplateCb" Width="260"/>
+        </StackPanel>
+
+        <!-- Render settings that the original SprEd lets you tweak inline. -->
+        <Border Grid.Row="1" Margin="0,8,0,0" Padding="8" Background="#2a1d14" CornerRadius="4">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                    <TextBlock Text="Format:" VerticalAlignment="Center" Foreground="#A4BEE0"/>
+                    <ComboBox x:Name="ByteFmtCb" Width="80">
+                        <ComboBoxItem Content="HEX"/>
+                        <ComboBoxItem Content="DEC"/>
+                        <ComboBoxItem Content="BIN"/>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                    <TextBlock Text="Label prefix:" VerticalAlignment="Center" Foreground="#A4BEE0"/>
+                    <TextBox x:Name="LabelPrefixTb" Width="100"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                    <TextBlock Text="Start line:" VerticalAlignment="Center" Foreground="#A4BEE0"/>
+                    <TextBox x:Name="StartLineTb" Width="80"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                    <TextBlock Text="Step:" VerticalAlignment="Center" Foreground="#A4BEE0"/>
+                    <TextBox x:Name="LineStepTb" Width="50"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                    <TextBlock Text="Bytes/line:" VerticalAlignment="Center" Foreground="#A4BEE0"/>
+                    <TextBox x:Name="BytesPerLineTb" Width="40"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <TextBox Grid.Row="2" x:Name="OutputTb" Margin="0,8"
+                 AcceptsReturn="True" FontFamily="Cascadia Mono, Consolas, Menlo, monospace"
+                 TextWrapping="NoWrap"/>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button x:Name="CopyBtn" Content="Copy"/>
+            <Button x:Name="SaveBtn" Content="Save As…"/>
+            <Button x:Name="CloseBtn" Content="Close" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

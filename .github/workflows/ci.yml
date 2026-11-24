@@ -1,0 +1,22 @@
+name: ci
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '11.0.x'
+          include-prerelease: true
+      - name: Restore
+        run: dotnet restore SpriteEditXL.csproj
+      - name: Build (Debug)
+        run: dotnet build SpriteEditXL.csproj -c Debug --no-restore --nologo

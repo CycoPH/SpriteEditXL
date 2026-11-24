@@ -1,0 +1,102 @@
+name: release
+
+# Trigger: push a tag like v1.0.0 → builds all three platforms, attaches binaries to the release.
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:   # also allow manual runs
+
+permissions:
+  contents: write   # needed to create the release and upload assets
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+            archive: zip
+            assetName: SpriteEditXL-win-x64.zip
+            exeSuffix: '.exe'
+          - os: ubuntu-latest
+            rid: linux-x64
+            archive: tar.gz
+            assetName: SpriteEditXL-linux-x64.tar.gz
+            exeSuffix: ''
+          - os: macos-latest
+            rid: osx-x64
+            archive: tar.gz
+            assetName: SpriteEditXL-osx-x64.tar.gz
+            exeSuffix: ''
+          - os: macos-latest
+            rid: osx-arm64
+            archive: tar.gz
+            assetName: SpriteEditXL-osx-arm64.tar.gz
+            exeSuffix: ''
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 11
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '11.0.x'
+          # Fall back to a preview channel if 11.0 GA isn't out yet on the runner image.
+          include-prerelease: true
+
+      - name: Publish ${{ matrix.rid }}
+        shell: bash
+        run: |
+          dotnet publish SpriteEditXL.csproj \
+            -c Release -r ${{ matrix.rid }} \
+            -o publish/${{ matrix.rid }} \
+            --nologo
+
+      - name: Archive (zip)
+        if: matrix.archive == 'zip'
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "publish/${{ matrix.rid }}/*" -DestinationPath "${{ matrix.assetName }}" -Force
+
+      - name: Archive (tar.gz)
+        if: matrix.archive == 'tar.gz'
+        shell: bash
+        run: |
+          chmod +x "publish/${{ matrix.rid }}/SpriteEditXL${{ matrix.exeSuffix }}" || true
+          tar -C "publish/${{ matrix.rid }}" -czf "${{ matrix.assetName }}" .
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.assetName }}
+          path: ${{ matrix.assetName }}
+          if-no-files-found: error
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Flatten artifacts
+        run: |
+          mkdir -p release
+          find artifacts -type f \( -name '*.zip' -o -name '*.tar.gz' \) -exec cp {} release/ \;
+          ls -la release
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*
+          generate_release_notes: true
+          draft: false
+          prerelease: false

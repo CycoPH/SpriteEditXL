@@ -1,0 +1,163 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="SpriteEditXL.UI.LibraryDialog"
+        Title="Library"
+        Width="820" Height="640"
+        WindowStartupLocation="CenterOwner">
+    <Window.Styles>
+        <Style Selector="TabItem">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="14,6"/>
+            <Setter Property="Margin" Value="0,0,2,0"/>
+            <Setter Property="Background" Value="#3a2a20"/>
+            <Setter Property="Foreground" Value="#DDDDDD"/>
+            <Setter Property="BorderBrush" Value="#888"/>
+            <Setter Property="BorderThickness" Value="1,1,1,0"/>
+            <Setter Property="MinHeight" Value="30"/>
+        </Style>
+        <Style Selector="TabItem:selected">
+            <Setter Property="Background" Value="#F4D47A"/>
+            <Setter Property="Foreground" Value="#222"/>
+        </Style>
+        <Style Selector="TabControl">
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Background" Value="#2a1d14"/>
+        </Style>
+        <Style Selector="TabControl /template/ ItemsPresenter#PART_ItemsPresenter">
+            <Setter Property="Margin" Value="0,0,0,-1"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid Margin="10" RowDefinitions="Auto,*,Auto">
+        <TabControl Grid.Row="0" Grid.RowSpan="2" x:Name="Tabs">
+            <!-- Tab 0: SpriteEditXL community library (read + write) -->
+            <TabItem Header="SpriteEditXL">
+                <Grid RowDefinitions="Auto,*,Auto,Auto" Background="#1a1410">
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="6" Margin="8,8,8,6">
+                        <TextBox x:Name="XlSearchBox" Watermark="Search SpriteEditXL community…" Width="200"/>
+                        <TextBlock Text="Sort:" VerticalAlignment="Center" Foreground="#A4BEE0"/>
+                        <ComboBox x:Name="XlSortByCb" Width="110">
+                            <ComboBoxItem Content="Date"/>
+                            <ComboBoxItem Content="Name"/>
+                            <ComboBoxItem Content="Frames"/>
+                        </ComboBox>
+                        <ComboBox x:Name="XlSortDirCb" Width="60">
+                            <ComboBoxItem Content="↓"/>
+                            <ComboBoxItem Content="↑"/>
+                        </ComboBox>
+                        <Button x:Name="XlRefreshBtn" Content="Refresh"
+                                ToolTip.Tip="Reload using cache if available"/>
+                        <Button x:Name="XlForceRefreshBtn" Content="Force refresh"
+                                ToolTip.Tip="Bypass cache and hit the server"/>
+                        <TextBlock x:Name="XlStatusTb" VerticalAlignment="Center"
+                                   Foreground="Gray" FontSize="11" Margin="12,0,0,0"/>
+                    </StackPanel>
+                    <ScrollViewer Grid.Row="1" Margin="8,0,8,0">
+                        <ListBox x:Name="XlList"/>
+                    </ScrollViewer>
+                    <!-- Pager -->
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="6" Margin="8,6,8,6"
+                                HorizontalAlignment="Center">
+                        <Button  x:Name="XlPrevBtn" Content="&lt;&lt; Prev" MinWidth="80"/>
+                        <TextBlock x:Name="XlPageTb" VerticalAlignment="Center" FontWeight="Bold"/>
+                        <Button  x:Name="XlNextBtn" Content="Next &gt;&gt;" MinWidth="80"/>
+                    </StackPanel>
+                    <Border Grid.Row="3" BorderBrush="#555" BorderThickness="0,1,0,0"
+                            Padding="8,8,8,8" Margin="0,0,0,0" Background="#2a1d14">
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Upload current sprite to the online library" FontWeight="Bold"/>
+                            <Grid ColumnDefinitions="90,*" RowDefinitions="Auto,Auto,Auto">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Name"       VerticalAlignment="Center"/>
+                                <TextBox   Grid.Row="0" Grid.Column="1" x:Name="UpNameTb"/>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Author"     VerticalAlignment="Center" Margin="0,4,0,0"/>
+                                <TextBox   Grid.Row="1" Grid.Column="1" x:Name="UpAuthorTb" Margin="0,4,0,0"/>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Description" VerticalAlignment="Top" Margin="0,4,0,0"/>
+                                <TextBox   Grid.Row="2" Grid.Column="1" x:Name="UpDescTb" AcceptsReturn="True"
+                                           Height="50" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                            </Grid>
+                            <Button x:Name="UploadBtn" Content="Upload"
+                                    HorizontalAlignment="Right" MinWidth="110"
+                                    HorizontalContentAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- Tab 1: Original SprEd community (read-only legacy archive) -->
+            <TabItem Header="SprEd (read)">
+                <Grid RowDefinitions="Auto,*,Auto" Background="#1a1410">
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="6" Margin="8,8,8,6">
+                        <TextBox x:Name="SprEdSearchBox" Watermark="Search SprEd community…" Width="200"/>
+                        <TextBlock Text="Sort:" VerticalAlignment="Center" Foreground="#A4BEE0"/>
+                        <ComboBox x:Name="SprEdSortByCb" Width="110">
+                            <ComboBoxItem Content="Date"/>
+                            <ComboBoxItem Content="Name"/>
+                            <ComboBoxItem Content="Frames"/>
+                        </ComboBox>
+                        <ComboBox x:Name="SprEdSortDirCb" Width="60">
+                            <ComboBoxItem Content="↓"/>
+                            <ComboBoxItem Content="↑"/>
+                        </ComboBox>
+                        <Button x:Name="SprEdRefreshBtn" Content="Refresh"
+                                ToolTip.Tip="Reload using cache if available"/>
+                        <Button x:Name="SprEdForceRefreshBtn" Content="Force refresh"
+                                ToolTip.Tip="Bypass cache and hit the server"/>
+                        <TextBlock x:Name="SprEdStatusTb" VerticalAlignment="Center"
+                                   Foreground="Gray" FontSize="11" Margin="12,0,0,0"/>
+                    </StackPanel>
+                    <ScrollViewer Grid.Row="1" Margin="8,0,8,0">
+                        <ListBox x:Name="SprEdList"/>
+                    </ScrollViewer>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="6" Margin="8,6,8,8"
+                                HorizontalAlignment="Center">
+                        <Button  x:Name="SprEdPrevBtn" Content="&lt;&lt; Prev" MinWidth="80"/>
+                        <TextBlock x:Name="SprEdPageTb" VerticalAlignment="Center" FontWeight="Bold"/>
+                        <Button  x:Name="SprEdNextBtn" Content="Next &gt;&gt;" MinWidth="80"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- Tab 2: Local library -->
+            <TabItem Header="Local">
+                <Grid RowDefinitions="Auto,*,Auto" Background="#1a1410">
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="6" Margin="8,8,8,6">
+                        <TextBox x:Name="LocalSearchBox" Watermark="Search local…" Width="200"/>
+                        <TextBlock Text="Sort:" VerticalAlignment="Center" Foreground="#A4BEE0"/>
+                        <ComboBox x:Name="LocalSortByCb" Width="110">
+                            <ComboBoxItem Content="Date"/>
+                            <ComboBoxItem Content="Name"/>
+                            <ComboBoxItem Content="Frames"/>
+                        </ComboBox>
+                        <ComboBox x:Name="LocalSortDirCb" Width="60">
+                            <ComboBoxItem Content="↓"/>
+                            <ComboBoxItem Content="↑"/>
+                        </ComboBox>
+                        <Button x:Name="LocalRefreshBtn" Content="Refresh"/>
+                        <Button x:Name="LocalFolderBtn"  Content="Open folder…"/>
+                        <Button x:Name="LocalDeleteBtn"  Content="Delete"
+                                ToolTip.Tip="Delete selected sprite from local library"/>
+                        <TextBlock x:Name="LocalStatusTb" VerticalAlignment="Center"
+                                   Foreground="Gray" FontSize="11" Margin="12,0,0,0"/>
+                    </StackPanel>
+                    <ScrollViewer Grid.Row="1" Margin="8,0,8,0">
+                        <ListBox x:Name="LocalList"/>
+                    </ScrollViewer>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="6" Margin="8,6,8,8"
+                                HorizontalAlignment="Center">
+                        <Button  x:Name="LocalPrevBtn" Content="&lt;&lt; Prev" MinWidth="80"/>
+                        <TextBlock x:Name="LocalPageTb" VerticalAlignment="Center" FontWeight="Bold"/>
+                        <Button  x:Name="LocalNextBtn" Content="Next &gt;&gt;" MinWidth="80"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0" Spacing="8">
+            <Button x:Name="LoadBtn"   Content="Load selected" MinWidth="130"
+                    HorizontalContentAlignment="Center" IsDefault="True"/>
+            <Button x:Name="CloseBtn"  Content="Close" MinWidth="110"
+                    HorizontalContentAlignment="Center" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

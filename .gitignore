@@ -1,0 +1,129 @@
+# ====================================================================
+# .NET build output
+# ====================================================================
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+[Dd]ebugPublic/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+build/
+publish/
+
+# Build artifacts
+*.dll
+*.exe
+*.pdb
+*.cache
+*.log
+*.vspx
+*.sap
+*.svclog
+
+# .NET metadata
+*.user
+*.suo
+*.userprefs
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+*.binlog
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+!packages/build/
+
+# ====================================================================
+# IDE / editor
+# ====================================================================
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+*.orig
+
+# ReSharper / CodeRush
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# Rider
+.idea/
+
+# ====================================================================
+# OS crud
+# ====================================================================
+.DS_Store
+._*
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# ====================================================================
+# Local AI / Claude tooling
+# ====================================================================
+.claude/
+memory/
+
+# ====================================================================
+# Node / Playwright screenshot infra (lives under tools/)
+# ====================================================================
+tools/node_modules/
+tools/package-lock.json
+tools/playwright-report/
+tools/test-results/
+
+# ====================================================================
+# Scratch tools' own build output (kept tracked as *source*, but not binaries)
+# ====================================================================
+tools/**/bin/
+tools/**/obj/
+
+# ====================================================================
+# Local scratch sprites and test files
+# ====================================================================
+mysprites.spr
+tools/preview-test.gif
+tools/TestPreviewDecode.csx
+tools/db.json
+tools/stderr.txt
+tools/out/
+
+# ====================================================================
+# Development screenshots (hundreds of PNGs accumulate during porting)
+# ====================================================================
+tools/*.png
+tools/*.spr
+tools/*.sprj
+tools/*.apl
+tools/*.gif
+
+# ====================================================================
+# Release archives
+# ====================================================================
+*.zip
+*.tar.gz
+*.7z
+
+# ====================================================================
+# Secrets (never commit)
+# ====================================================================
+.env
+.env.*
+secrets.json
+appsettings.Local.json
+*.pfx
+*.key

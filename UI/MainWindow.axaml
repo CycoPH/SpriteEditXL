@@ -1,0 +1,528 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:SpriteEditXL.UI"
+        x:Class="SpriteEditXL.UI.MainWindow"
+        Title="SpriteEditXL — Atari sprite editor"
+        Icon="avares://SpriteEditXL/Assets/AppIcon.png"
+        Width="1280" Height="820" MinWidth="900" MinHeight="620"
+        Background="#462F21">
+    <Window.Resources>
+        <!-- Shared colors from the original SprEd CSS -->
+        <SolidColorBrush x:Key="SpredBg"      Color="#462F21"/>
+        <SolidColorBrush x:Key="SpredBtnBg"   Color="#AAAAAA"/>
+        <SolidColorBrush x:Key="SpredBtnFg"   Color="#222222"/>
+        <SolidColorBrush x:Key="SpredText"    Color="#A4BEE0"/>
+        <SolidColorBrush x:Key="SpredDotted"  Color="#666666"/>
+        <SolidColorBrush x:Key="SpredAccent"  Color="#4EA3FF"/>
+    </Window.Resources>
+    <Window.Styles>
+        <!-- Classic chunky beige menu button -->
+        <Style Selector="Button.menu">
+            <Setter Property="Background" Value="{StaticResource SpredBtnBg}"/>
+            <Setter Property="Foreground" Value="{StaticResource SpredBtnFg}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontFamily" Value="Arial, Helvetica, sans-serif"/>
+            <Setter Property="Padding" Value="6,2"/>
+            <Setter Property="MinHeight" Value="20"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#888888"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="Button.menu:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#CCCCCC"/>
+        </Style>
+        <Style Selector="Button.menu.inactive">
+            <Setter Property="Opacity" Value="0.4"/>
+            <Setter Property="IsEnabled" Value="False"/>
+        </Style>
+        <Style Selector="ToggleButton.menu">
+            <Setter Property="Background" Value="{StaticResource SpredBtnBg}"/>
+            <Setter Property="Foreground" Value="{StaticResource SpredBtnFg}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="6,2"/>
+            <Setter Property="MinHeight" Value="20"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#888888"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="ToggleButton.menu:checked /template/ ContentPresenter">
+            <Setter Property="Background" Value="#F4D47A"/>
+        </Style>
+        <!-- Override: toggles classed .noColor keep the beige background when checked
+             (used for Wrap/DLI where the ✓/✗ glyph conveys state instead). -->
+        <Style Selector="ToggleButton.menu.noColor:checked /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource SpredBtnBg}"/>
+        </Style>
+        <Style Selector="ToggleButton.menu.noColor:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#CCCCCC"/>
+        </Style>
+
+        <!-- A vertical dotted-ish separator between button groups -->
+        <Style Selector="Border.sep">
+            <Setter Property="BorderBrush" Value="#888888"/>
+            <Setter Property="BorderThickness" Value="0,0,1,0"/>
+            <Setter Property="Margin" Value="4,2,8,2"/>
+            <Setter Property="Height" Value="16"/>
+            <Setter Property="Width" Value="1"/>
+        </Style>
+    </Window.Styles>
+
+    <Panel>
+    <DockPanel LastChildFill="True">
+
+        <!-- =======================================================
+             ROW 0 — Native application menu (full access to every command)
+             ======================================================= -->
+        <Menu DockPanel.Dock="Top" Background="#2a1d14" Foreground="{StaticResource SpredText}">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New sprite"              x:Name="MiNew"/>
+                <MenuItem Header="_Open .sprj / .spr…"      x:Name="MiOpen"/>
+                <MenuItem Header="_Save as .sprj…"          x:Name="MiSave"/>
+                <MenuItem Header="Export as _.spr binary…"  x:Name="MiExportSpr"/>
+                <Separator/>
+                <MenuItem Header="_Export source code…"     x:Name="MiExport"/>
+                <MenuItem Header="Export animated _GIF…"    x:Name="MiExportGif"/>
+                <Separator/>
+                <MenuItem Header="Load _background image… (2bpp)" x:Name="MiLoadBack"/>
+                <MenuItem Header="Toggle background overlay"       x:Name="MiToggleBack"/>
+                <MenuItem Header="Load _reference image… (PNG/GIF/JPG)" x:Name="MiLoadReference"/>
+                <MenuItem Header="Clear reference image"           x:Name="MiClearReference"/>
+                <Separator/>
+                <MenuItem Header="Browse _library…"                 x:Name="MiLibrary"/>
+                <MenuItem Header="Save to local library…"           x:Name="MiSaveToLocalLibrary"/>
+                <Separator/>
+                <MenuItem Header="Load _aNode icon from clipboard" x:Name="MiAnodeIn"/>
+                <MenuItem Header="Copy a_Node icon to clipboard"   x:Name="MiAnodeOut"/>
+                <Separator/>
+                <MenuItem Header="E_xit"                    x:Name="MiExit"/>
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Undo"                    x:Name="MiUndo"/>
+                <MenuItem Header="_Redo"                    x:Name="MiRedo"/>
+                <Separator/>
+                <MenuItem Header="Copy frame"               x:Name="MiCopyFrame"/>
+                <MenuItem Header="Paste frame"              x:Name="MiPasteFrame"/>
+                <MenuItem Header="Clear frame"              x:Name="MiClearFrame"/>
+                <Separator/>
+                <MenuItem Header="Copy colors"              x:Name="MiCopyColors"/>
+                <MenuItem Header="Paste colors"             x:Name="MiPasteColors"/>
+                <MenuItem Header="Copy DLI"                 x:Name="MiCopyDli"/>
+                <MenuItem Header="Paste DLI"                x:Name="MiPasteDli"/>
+                <Separator/>
+                <MenuItem Header="_Options…"                x:Name="MiOptions"/>
+            </MenuItem>
+            <MenuItem Header="F_rame">
+                <MenuItem Header="_Add frame"               x:Name="MiAddFrame"/>
+                <MenuItem Header="C_lone frame"             x:Name="MiCloneFrame"/>
+                <MenuItem Header="_Delete frame"            x:Name="MiDelFrame"/>
+                <MenuItem Header="Delete _all frames"       x:Name="MiDelAll"/>
+                <Separator/>
+                <MenuItem Header="Move frame left"          x:Name="MiFrameLeft"/>
+                <MenuItem Header="Move frame right"         x:Name="MiFrameRight"/>
+                <Separator/>
+                <MenuItem Header="_Play / Stop"             x:Name="MiPlay"/>
+            </MenuItem>
+            <MenuItem Header="_Transform">
+                <MenuItem Header="Flip _horizontal"         x:Name="MiFlipH"/>
+                <MenuItem Header="Flip _vertical"           x:Name="MiFlipV"/>
+                <Separator/>
+                <MenuItem Header="Move contents _left"      x:Name="MiMoveL"/>
+                <MenuItem Header="Move contents _right"     x:Name="MiMoveR"/>
+                <MenuItem Header="Move contents _up"        x:Name="MiMoveU"/>
+                <MenuItem Header="Move contents _down"      x:Name="MiMoveD"/>
+                <Separator/>
+                <MenuItem Header="Double every line"        x:Name="MiHeightUp"/>
+                <MenuItem Header="Tighten (drop odd lines)" x:Name="MiHeightDown"/>
+                <Separator/>
+                <MenuItem Header="Swap pairs (P0/1 ↔ P2/3)" x:Name="MiSwapPairs"/>
+                <MenuItem Header="Clear overlaps"           x:Name="MiClearOverlaps"/>
+            </MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem Header="Toggle _grid"             x:Name="MiGrid"/>
+                <MenuItem Header="Toggle _square pixels"    x:Name="MiSq"/>
+                <MenuItem Header="Toggle active _marker"    x:Name="MiMark"/>
+                <MenuItem Header="Toggle OR draws _outside" x:Name="MiOr"/>
+                <MenuItem Header="Toggle _wrap editor"      x:Name="MiWrap"/>
+                <Separator/>
+                <MenuItem Header="Toggle layer 0–1"         x:Name="MiLayer01"/>
+                <MenuItem Header="Toggle layer 2–3"         x:Name="MiLayer23"/>
+                <MenuItem Header="Toggle link colors"       x:Name="MiLink"/>
+                <Separator/>
+                <MenuItem Header="Zoom in"                  x:Name="MiZoomIn"/>
+                <MenuItem Header="Zoom out"                 x:Name="MiZoomOut"/>
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_Keyboard shortcuts…"     x:Name="MiHelp"/>
+                <MenuItem Header="_About SpriteEditXL…"       x:Name="MiAbout"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- =======================================================
+             ROW 1 — App menu (Load / Save / Export / Undo / Redo / Options / Help)
+             + right-aligned version label
+             ======================================================= -->
+        <Border DockPanel.Dock="Top" BorderBrush="{StaticResource SpredDotted}"
+                BorderThickness="0,0,0,1" Padding="10,8,10,4">
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button x:Name="LoadBtn"    Classes="menu" Content="Load"/>
+                    <Button x:Name="SaveBtn"    Classes="menu" Content="Save"/>
+                    <Button x:Name="ExportBtn"  Classes="menu" Content="Export"/>
+                    <Border Classes="sep"/>
+                    <Button x:Name="UndoBtn"    Classes="menu" Content="Undo"/>
+                    <Button x:Name="RedoBtn"    Classes="menu" Content="Redo"/>
+                    <Border Classes="sep"/>
+                    <Button x:Name="OptionsBtn" Classes="menu" Content="Options"/>
+                    <Border Classes="sep"/>
+                    <Button x:Name="HelpBtn"    Classes="menu" Content="Help"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock x:Name="VersionLbl"
+                               Foreground="{StaticResource SpredAccent}"
+                               FontWeight="Bold" FontSize="14"
+                               VerticalAlignment="Center"
+                               Margin="0,0,10,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- =======================================================
+             ROW 2 — Frame-edit menu (Clear / Copy / Paste / Flip-H / Flip-V /
+             arrows / height / clear overlaps / swap pairs / Library / aNode export)
+             ======================================================= -->
+        <Border DockPanel.Dock="Top" BorderBrush="{StaticResource SpredDotted}"
+                BorderThickness="0,0,0,1" Padding="10,6">
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="ClearFrameBtn"  Classes="menu" Content="Clear"/>
+                <Button x:Name="CopyFrameBtn"   Classes="menu" Content="Copy"/>
+                <Button x:Name="PasteFrameBtn"  Classes="menu" Content="Paste"/>
+                <Border Classes="sep"/>
+                <Button x:Name="FlipHBtn"       Classes="menu" Content="Flip-H"/>
+                <Button x:Name="FlipVBtn"       Classes="menu" Content="Flip-V"/>
+                <Border Classes="sep"/>
+                <Button x:Name="MoveLBtn" Classes="menu" Padding="6,0" MinWidth="34"
+                        ToolTip.Tip="Shift left">
+                    <Image Source="avares://SpriteEditXL/Assets/arrLeft.png"
+                           Width="20" Height="18" Stretch="Uniform"/>
+                </Button>
+                <Button x:Name="MoveRBtn" Classes="menu" Padding="6,0" MinWidth="34"
+                        ToolTip.Tip="Shift right">
+                    <Image Source="avares://SpriteEditXL/Assets/arrRight.png"
+                           Width="20" Height="18" Stretch="Uniform"/>
+                </Button>
+                <Button x:Name="MoveUBtn" Classes="menu" Padding="6,0" MinWidth="34"
+                        ToolTip.Tip="Shift up">
+                    <Image Source="avares://SpriteEditXL/Assets/arrUp.png"
+                           Width="20" Height="18" Stretch="Uniform"/>
+                </Button>
+                <Button x:Name="MoveDBtn" Classes="menu" Padding="6,0" MinWidth="34"
+                        ToolTip.Tip="Shift down">
+                    <Image Source="avares://SpriteEditXL/Assets/arrDown.png"
+                           Width="20" Height="18" Stretch="Uniform"/>
+                </Button>
+                <Border Classes="sep"/>
+                <Button x:Name="HeightUpBtn"   Classes="menu" Content="≡+" ToolTip.Tip="Double every line"/>
+                <Button x:Name="HeightDownBtn" Classes="menu" Content="≡−" ToolTip.Tip="Remove every second line"/>
+                <Border Classes="sep"/>
+                <Button x:Name="ClearOverlapBtn" Classes="menu" ToolTip.Tip="Clear overlaps">
+                    <Viewbox Width="16" Height="16">
+                        <Canvas Width="18" Height="18">
+                            <!-- Two outlined squares + diagonal strike, matching SprEd's #clearOverlap icon -->
+                            <Rectangle Canvas.Left="2" Canvas.Top="2" Width="8" Height="8"
+                                       Stroke="#222" StrokeThickness="2" Fill="Transparent"/>
+                            <Rectangle Canvas.Left="8" Canvas.Top="8" Width="8" Height="8"
+                                       Stroke="#222" StrokeThickness="2" Fill="Transparent"/>
+                            <Line StartPoint="1,17" EndPoint="17,1" Stroke="#222" StrokeThickness="2"/>
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+                <Border Classes="sep"/>
+                <Button x:Name="SwapPairsBtn"  Classes="menu" ToolTip.Tip="Swap pairs (P0/1 ↔ P2/3)">
+                    <Image Source="avares://SpriteEditXL/Assets/swap.png"
+                           Width="16" Height="15" Stretch="Uniform"/>
+                </Button>
+                <Border Classes="sep"/>
+                <Button x:Name="LibraryBtn"    Classes="menu" Content="Library"/>
+            </StackPanel>
+        </Border>
+
+        <!-- =======================================================
+             ROW 4 — Timeline menu (bottom-most of the bottom block)
+             ▶ ■ | Add | Clone | Delete | ←□ | □→ | Delete All | Export to Gif
+             ======================================================= -->
+        <Border DockPanel.Dock="Bottom" BorderBrush="{StaticResource SpredDotted}"
+                BorderThickness="0,1,0,0" Padding="10,6">
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="PlayBtn"  Classes="menu" Content="▶" FontSize="14" Padding="10,0" MinWidth="34"/>
+                <Button x:Name="StopBtn"  Classes="menu" Content="■" FontSize="14" Padding="10,0" MinWidth="34"/>
+                <Border Classes="sep"/>
+                <Button x:Name="AddFrameBtn"   Classes="menu" Content="Add"/>
+                <Button x:Name="CloneFrameBtn" Classes="menu" Content="Clone"/>
+                <Button x:Name="DelFrameBtn"   Classes="menu" Content="Delete"/>
+                <Border Classes="sep"/>
+                <Button x:Name="FrameLBtn" Classes="menu" Content="←□" ToolTip.Tip="Move frame left"/>
+                <Button x:Name="FrameRBtn" Classes="menu" Content="□→" ToolTip.Tip="Move frame right"/>
+                <Border Classes="sep"/>
+                <Button x:Name="DelAllBtn" Classes="menu" Content="Delete All"/>
+                <Border Classes="sep"/>
+                <Button x:Name="ExportGifBtn" Classes="menu" Content="Export to Gif"/>
+            </StackPanel>
+        </Border>
+
+        <!-- =======================================================
+             MAIN WORKSPACE — stacked vertically:
+               [ Editor + DLI + Colors + status ]
+               [ Sequences panel: Primary, then each custom sequence ]
+             ======================================================= -->
+        <Grid Margin="10" RowDefinitions="Auto,*">
+            <!-- Row 0: editor row -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <ScrollViewer Grid.Column="0"
+                              HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                              Background="Transparent" MaxWidth="900" MaxHeight="520"
+                              HorizontalAlignment="Left" VerticalAlignment="Top"
+                              HorizontalContentAlignment="Left" VerticalContentAlignment="Top">
+                    <ui:SpriteCanvas x:Name="EditorView" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                </ScrollViewer>
+
+                <ui:DliPanel Grid.Column="1" x:Name="DliPanelView"
+                             Margin="4,0,0,0" VerticalAlignment="Top"/>
+
+                <ui:ColorStrip Grid.Column="2" x:Name="ColorStripView"
+                               Margin="15,0,0,0" VerticalAlignment="Top"/>
+
+                <Grid Grid.Column="3" Margin="20,4,0,0" VerticalAlignment="Top"
+                      ColumnDefinitions="Auto,Auto,*">
+                <StackPanel Grid.Column="0" VerticalAlignment="Top" Spacing="8">
+                    <TextBlock x:Name="StatusTb"
+                               Foreground="{StaticResource SpredText}"
+                               FontFamily="Cascadia Mono, Consolas, monospace"
+                               TextWrapping="Wrap"/>
+
+                    <!-- 3×5 icon grid:
+                         Row 0: [Flip-V ← →  +    −   ]
+                         Row 1: [Flip-H ↑ ↓  Wrap Wrap]   (Wrap spans cols 3-4)
+                         Row 2: [Undo  Redo  DLI  DLI  ] (Redo spans 1-2, DLI spans 3-4) -->
+                    <Grid x:Name="QuickActionsGrid"
+                          HorizontalAlignment="Left"
+                          RowDefinitions="Auto,Auto,Auto"
+                          ColumnDefinitions="Auto,Auto,Auto,Auto,Auto">
+                        <Button x:Name="QaFlipVBtn" Classes="menu" Grid.Row="0" Grid.Column="0"
+                                ToolTip.Tip="Flip vertically" MinWidth="56"
+                                HorizontalContentAlignment="Center"
+                                Margin="0,0,0,8">
+                            <Viewbox Width="22" Height="22">
+                                <Canvas Width="24" Height="24">
+                                    <Path Fill="#111" Stroke="#111" StrokeThickness="0.8"
+                                          Data="M16 17.01V10h-2v7.01h-3L15 21l4-3.99zM9 3L5 6.99h3V14h2V6.99h3z"/>
+                                </Canvas>
+                            </Viewbox>
+                        </Button>
+                        <Button x:Name="QaMoveLBtn" Classes="menu" Grid.Row="0" Grid.Column="1"
+                                ToolTip.Tip="Shift left" MinWidth="34"
+                                HorizontalContentAlignment="Center"
+                                Margin="0,0,0,8">
+                            <Image Source="avares://SpriteEditXL/Assets/arrLeft.png"
+                                   Width="20" Height="18" Stretch="Uniform"/>
+                        </Button>
+                        <Button x:Name="QaMoveRBtn" Classes="menu" Grid.Row="0" Grid.Column="2"
+                                ToolTip.Tip="Shift right" MinWidth="34"
+                                HorizontalContentAlignment="Center"
+                                Margin="0,0,0,8">
+                            <Image Source="avares://SpriteEditXL/Assets/arrRight.png"
+                                   Width="20" Height="18" Stretch="Uniform"/>
+                        </Button>
+                        <Button x:Name="QaZoomInBtn" Classes="menu" Grid.Row="0" Grid.Column="3"
+                                ToolTip.Tip="Zoom in (+)" MinWidth="30"
+                                HorizontalContentAlignment="Center"
+                                Margin="8,0,0,8">
+                            <Viewbox Width="16" Height="16">
+                                <Canvas Width="24" Height="24">
+                                    <Path Fill="#222"
+                                          Data="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zm2.5-4h-2v2H9v-2H7V9h2V7h1v2h2v1z"/>
+                                </Canvas>
+                            </Viewbox>
+                        </Button>
+                        <Button x:Name="QaZoomOutBtn" Classes="menu" Grid.Row="0" Grid.Column="4"
+                                ToolTip.Tip="Zoom out (−)" MinWidth="30"
+                                HorizontalContentAlignment="Center"
+                                Margin="0,0,0,8">
+                            <Viewbox Width="16" Height="16">
+                                <Canvas Width="24" Height="24">
+                                    <Path Fill="#222"
+                                          Data="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zM7 9h5v1H7z"/>
+                                </Canvas>
+                            </Viewbox>
+                        </Button>
+                        <Button x:Name="QaFlipHBtn" Classes="menu" Grid.Row="1" Grid.Column="0"
+                                ToolTip.Tip="Flip horizontally" MinWidth="56"
+                                HorizontalContentAlignment="Center">
+                            <Viewbox Width="22" Height="22">
+                                <Canvas Width="24" Height="24">
+                                    <Path Fill="#111" Stroke="#111" StrokeThickness="0.8"
+                                          Data="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/>
+                                </Canvas>
+                            </Viewbox>
+                        </Button>
+                        <Button x:Name="QaMoveUBtn" Classes="menu" Grid.Row="1" Grid.Column="1"
+                                ToolTip.Tip="Shift up" MinWidth="34"
+                                HorizontalContentAlignment="Center">
+                            <Image Source="avares://SpriteEditXL/Assets/arrUp.png"
+                                   Width="20" Height="18" Stretch="Uniform"/>
+                        </Button>
+                        <Button x:Name="QaMoveDBtn" Classes="menu" Grid.Row="1" Grid.Column="2"
+                                ToolTip.Tip="Shift down" MinWidth="34"
+                                HorizontalContentAlignment="Center">
+                            <Image Source="avares://SpriteEditXL/Assets/arrDown.png"
+                                   Width="20" Height="18" Stretch="Uniform"/>
+                        </Button>
+
+                        <!-- Row 3: Undo / Redo (MUI icon shapes) -->
+                        <Button x:Name="QaUndoBtn" Classes="menu" Grid.Row="2" Grid.Column="0"
+                                ToolTip.Tip="Undo" MinWidth="56"
+                                HorizontalContentAlignment="Center"
+                                Margin="0,8,0,0">
+                            <Viewbox Width="18" Height="18">
+                                <Canvas Width="24" Height="24">
+                                    <Path Fill="#222"
+                                          Data="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.87 5.12-1.87 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/>
+                                </Canvas>
+                            </Viewbox>
+                        </Button>
+                        <Button x:Name="QaRedoBtn" Classes="menu" Grid.Row="2" Grid.Column="1"
+                                Grid.ColumnSpan="2"
+                                ToolTip.Tip="Redo" MinWidth="72"
+                                HorizontalContentAlignment="Center"
+                                Margin="0,8,0,0">
+                            <Viewbox Width="18" Height="18">
+                                <Canvas Width="24" Height="24">
+                                    <Path Fill="#222"
+                                          Data="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.87L13 16h9V7l-3.6 3.6z"/>
+                                </Canvas>
+                            </Viewbox>
+                        </Button>
+
+                        <!-- Wrap/DLI toggles live under the zoom pair (cols 3-4) on rows 1 and 2. -->
+                        <ToggleButton x:Name="QaWrapBtn" Classes="menu noColor" Grid.Row="1" Grid.Column="3"
+                                      Grid.ColumnSpan="2"
+                                      ToolTip.Tip="Wrap editor: shifted pixels reappear on the opposite edge (W)"
+                                      MinWidth="60"
+                                      HorizontalContentAlignment="Stretch"
+                                      Margin="8,0,0,0">
+                            <Grid ColumnDefinitions="*,Auto" MinWidth="52">
+                                <TextBlock Grid.Column="0" Text="Wrap"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"/>
+                                <TextBlock Grid.Column="1" x:Name="QaWrapIndicator"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Right"
+                                           FontFamily="Segoe UI Symbol, Segoe UI, Arial"
+                                           FontWeight="Bold"
+                                           Margin="8,0,0,0"
+                                           Text="✗"/>
+                            </Grid>
+                        </ToggleButton>
+                        <ToggleButton x:Name="QaDliBtn" Classes="menu noColor" Grid.Row="2" Grid.Column="3"
+                                      Grid.ColumnSpan="2"
+                                      ToolTip.Tip="DLI mode: per-row palette (Display List Interrupt)"
+                                      MinWidth="60"
+                                      HorizontalContentAlignment="Stretch"
+                                      Margin="8,8,0,0">
+                            <Grid ColumnDefinitions="*,Auto" MinWidth="52">
+                                <TextBlock Grid.Column="0" Text="DLI"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"/>
+                                <TextBlock Grid.Column="1" x:Name="QaDliIndicator"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Right"
+                                           FontFamily="Segoe UI Symbol, Segoe UI, Arial"
+                                           FontWeight="Bold"
+                                           Margin="8,0,0,0"
+                                           Text="✗"/>
+                            </Grid>
+                        </ToggleButton>
+                    </Grid>
+                </StackPanel>
+
+                <!-- Reference image minimap column (to the right of the quick-actions grid) -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="20,0,0,0" Spacing="4">
+                    <TextBlock Text="Reference" Foreground="{StaticResource SpredText}"
+                               FontWeight="Bold" FontSize="11"/>
+                    <Border BorderBrush="#666" BorderThickness="1" Padding="2"
+                            HorizontalAlignment="Left">
+                        <ui:ReferenceMinimap x:Name="ReferenceMinimapView"/>
+                    </Border>
+                    <TextBlock x:Name="ReferenceInfoTb"
+                               Foreground="{StaticResource SpredText}"
+                               FontFamily="Cascadia Mono, Consolas, monospace"
+                               FontSize="10"
+                               Text=""/>
+                    <TextBlock x:Name="ReferencePosTb"
+                               Foreground="{StaticResource SpredText}"
+                               FontFamily="Cascadia Mono, Consolas, monospace"
+                               FontSize="10"
+                               Text=""/>
+
+                    <!-- Reference zoom: sample every N reference pixels per sprite cell -->
+                    <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,4,0,0">
+                        <TextBlock Text="Zoom X:" Foreground="{StaticResource SpredText}"
+                                   FontSize="11" VerticalAlignment="Center"/>
+                        <ui:TinyNumericUpDown x:Name="RefScaleXNud" Minimum="1" Maximum="32"
+                                              Width="46" Height="22"/>
+                        <TextBlock Text="Y:" Foreground="{StaticResource SpredText}"
+                                   FontSize="11" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                        <ui:TinyNumericUpDown x:Name="RefScaleYNud" Minimum="1" Maximum="32"
+                                              Width="46" Height="22"/>
+                    </StackPanel>
+                    <ToggleButton x:Name="ReferenceShowBtn" Classes="menu noColor"
+                                  HorizontalContentAlignment="Stretch"
+                                  Margin="0,4,0,0">
+                        <Grid ColumnDefinitions="*,Auto" MinWidth="120">
+                            <TextBlock Grid.Column="0" Text="Show reference"
+                                       VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <TextBlock Grid.Column="1" x:Name="ReferenceShowIndicator"
+                                       VerticalAlignment="Center" HorizontalAlignment="Right"
+                                       FontFamily="Segoe UI Symbol, Segoe UI, Arial"
+                                       FontWeight="Bold" Margin="8,0,0,0" Text="✗"/>
+                        </Grid>
+                    </ToggleButton>
+                    <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
+                        <Button x:Name="ReferenceLoadBtn" Classes="menu" Content="Load…"
+                                ToolTip.Tip="Load a reference image (PNG/GIF/JPG/BMP…)"
+                                HorizontalContentAlignment="Center"/>
+                        <Button x:Name="ReferenceClearBtn" Classes="menu" Content="Clear"
+                                ToolTip.Tip="Remove the loaded reference image"
+                                HorizontalContentAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+                </Grid>
+            </Grid>
+
+            <!-- Row 1: stacked sequence strips -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled" Margin="0,12,0,0">
+                <StackPanel x:Name="SequencesPanel" Orientation="Vertical" Spacing="4">
+                    <!-- SequenceRow children are added at runtime. The + button lives at the bottom. -->
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </DockPanel>
+
+    <!-- Drag-ghost overlay — pointer-transparent canvas that hosts the floating thumbnail -->
+    <Canvas x:Name="DragOverlay" IsHitTestVisible="False" />
+    <!-- Toast host — status messages appear bottom-right, pointer-transparent so they don't block clicks -->
+    <Grid x:Name="ToastHost" IsHitTestVisible="False"/>
+    </Panel>
+</Window>

@@ -1,0 +1,192 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:SpriteEditXL.UI"
+        x:Class="SpriteEditXL.UI.OptionsDialog"
+        Title="Options" Width="900" Height="640"
+        WindowStartupLocation="CenterOwner" CanResize="False">
+    <Window.Styles>
+        <!-- Compact integer spinners for every numeric field in this dialog. -->
+        <Style Selector="ui|TinyNumericUpDown">
+            <Setter Property="Width" Value="56"/>
+            <Setter Property="Height" Value="22"/>
+        </Style>
+    </Window.Styles>
+    <Grid RowDefinitions="*,Auto" Margin="12">
+        <ScrollViewer Grid.Row="0">
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto">
+                <!-- LEFT: Editor + Background -->
+                <StackPanel Grid.Column="0" Spacing="6" Margin="0,0,16,0">
+                    <TextBlock Text="Editor Options" FontWeight="Bold" Margin="0,0,0,4"/>
+
+                    <CheckBox x:Name="SquarePixelCb" Content="Square Pixel"/>
+
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="Palette:" Width="160" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="PaletteCb" Width="140">
+                            <ComboBoxItem Content="PAL"/>
+                            <ComboBoxItem Content="NTSC"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <CheckBox x:Name="CommonPaletteCb" Content="Common palette for all frames"/>
+
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="Editor zoom (0–23):" Width="160" VerticalAlignment="Center"/>
+                        <ui:TinyNumericUpDown x:Name="CellSizeNud" Minimum="0" Maximum="23"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="Animation delay (frames):" Width="160" VerticalAlignment="Center"/>
+                        <ui:TinyNumericUpDown x:Name="AnimSpeedNud" Minimum="1" Maximum="100"/>
+                    </StackPanel>
+
+                    <CheckBox x:Name="ShowGridCb" Content="Show grid (G)"/>
+                    <CheckBox x:Name="OrOutsideCb" Content="OR color draws on both (O)"/>
+                    <CheckBox x:Name="NoOverlapCb" Content="No overlap mode"/>
+                    <CheckBox x:Name="WrapEditorCb" Content="Wrap editor window (W)"/>
+                    <CheckBox x:Name="MarkActiveCb" Content="Mark active region (M)"/>
+                    <CheckBox x:Name="DliOnCb" Content="Enable DLI mode"/>
+                    <CheckBox x:Name="MultiFrameCb" Content="Edit frame range"/>
+                    <CheckBox x:Name="FrameDelayCb" Content="Frame delay mode"/>
+                    <CheckBox x:Name="DrawOnPlayCb" Content="Draw on animation"/>
+
+                    <Separator Margin="0,8,0,8"/>
+                    <TextBlock Text="Background settings" FontWeight="Bold"/>
+
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="Image offset:" Width="160" VerticalAlignment="Center"/>
+                        <ui:TinyNumericUpDown x:Name="BackOffsetNud" Minimum="0" Maximum="10240"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="Force image width:" Width="160" VerticalAlignment="Center"/>
+                        <ui:TinyNumericUpDown x:Name="BackImageWidthNud" Minimum="0" Maximum="40"/>
+                        <TextBlock Text="0 = sprite width" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="Horizontal distance:" Width="160" VerticalAlignment="Center"/>
+                        <ui:TinyNumericUpDown x:Name="BackOffsetHNud" Minimum="0" Maximum="4"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="Vertical distance:" Width="160" VerticalAlignment="Center"/>
+                        <ui:TinyNumericUpDown x:Name="BackOffsetVNud" Minimum="0" Maximum="4"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- RIGHT: Sprite + Import/Export -->
+                <StackPanel Grid.Column="1" Spacing="6">
+                    <TextBlock Text="Sprite Options" FontWeight="Bold" Margin="0,0,0,4"/>
+
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="Layout template:" Width="160" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="SpriteTemplateCb" Width="220"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="Line resolution:" Width="160" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="LineResCb" Width="140">
+                            <ComboBoxItem Content="2 lines"/>
+                            <ComboBoxItem Content="1 line"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="Sprite height:" Width="160" VerticalAlignment="Center"/>
+                        <ui:TinyNumericUpDown x:Name="HeightNud" Minimum="1" Maximum="128"/>
+                    </StackPanel>
+
+                    <!-- Standard sprite fields -->
+                    <StackPanel x:Name="StandardFields" Spacing="6">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="Merge mode:" Width="160" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="MergeModeCb" Width="220">
+                                <ComboBoxItem Content="P0+P1"/>
+                                <ComboBoxItem Content="PM0+PM1"/>
+                                <ComboBoxItem Content="MP0+MP1"/>
+                                <ComboBoxItem Content="P0+P1 P2+P3"/>
+                                <ComboBoxItem Content="PM0+PM1 PM2+PM3"/>
+                                <ComboBoxItem Content="MP0+MP1 MP2+MP3"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="Sprite 0–1 gap:" Width="160" VerticalAlignment="Center"/>
+                            <ui:TinyNumericUpDown x:Name="Gap01Nud" Minimum="0" Maximum="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="Sprite 2–3 gap:" Width="160" VerticalAlignment="Center"/>
+                            <ui:TinyNumericUpDown x:Name="Gap23Nud" Minimum="0" Maximum="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="Pair gap:" Width="160" VerticalAlignment="Center"/>
+                            <ui:TinyNumericUpDown x:Name="PairGapNud" Minimum="0" Maximum="20"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Freestyle fields -->
+                    <StackPanel x:Name="FreestyleFields" Spacing="6" IsVisible="False">
+                        <TextBlock Text="Sprite offsets (-1 disables)"/>
+                        <Grid ColumnDefinitions="Auto,*,Auto,*" RowDefinitions="Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="P0" Margin="0,0,6,0"/>
+                            <ui:TinyNumericUpDown Grid.Row="0" Grid.Column="1" x:Name="P0Nud" Minimum="-1" Maximum="80"/>
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="P1" Margin="12,0,6,0"/>
+                            <ui:TinyNumericUpDown Grid.Row="0" Grid.Column="3" x:Name="P1Nud" Minimum="-1" Maximum="80"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="P2" Margin="0,0,6,0"/>
+                            <ui:TinyNumericUpDown Grid.Row="1" Grid.Column="1" x:Name="P2Nud" Minimum="-1" Maximum="80"/>
+                            <TextBlock Grid.Row="1" Grid.Column="2" Text="P3" Margin="12,0,6,0"/>
+                            <ui:TinyNumericUpDown Grid.Row="1" Grid.Column="3" x:Name="P3Nud" Minimum="-1" Maximum="80"/>
+                        </Grid>
+                        <TextBlock Text="Missile offsets"/>
+                        <Grid ColumnDefinitions="Auto,*,Auto,*" RowDefinitions="Auto,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="M0" Margin="0,0,6,0"/>
+                            <ui:TinyNumericUpDown Grid.Row="0" Grid.Column="1" x:Name="M0Nud" Minimum="-1" Maximum="80"/>
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="M1" Margin="12,0,6,0"/>
+                            <ui:TinyNumericUpDown Grid.Row="0" Grid.Column="3" x:Name="M1Nud" Minimum="-1" Maximum="80"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="M2" Margin="0,0,6,0"/>
+                            <ui:TinyNumericUpDown Grid.Row="1" Grid.Column="1" x:Name="M2Nud" Minimum="-1" Maximum="80"/>
+                            <TextBlock Grid.Row="1" Grid.Column="2" Text="M3" Margin="12,0,6,0"/>
+                            <ui:TinyNumericUpDown Grid.Row="1" Grid.Column="3" x:Name="M3Nud" Minimum="-1" Maximum="80"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <Separator Margin="0,8,0,8"/>
+                    <TextBlock Text="Import/Export" FontWeight="Bold"/>
+
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="Show bytes as:" Width="160" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="BytesExportCb" Width="140">
+                            <ComboBoxItem Content="HEX"/>
+                            <ComboBoxItem Content="DEC"/>
+                            <ComboBoxItem Content="BIN"/>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="Bytes per line:" Width="160" VerticalAlignment="Center"/>
+                        <ui:TinyNumericUpDown x:Name="BytesPerLineNud" Minimum="1" Maximum="100000"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="Label prefix:" Width="160" VerticalAlignment="Center"/>
+                        <TextBox x:Name="LabelPrefixTb" Width="220"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="Starting line number:" Width="160" VerticalAlignment="Center"/>
+                        <ui:TinyNumericUpDown x:Name="StartingLineNud" Minimum="0" Maximum="65535"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="Line step:" Width="160" VerticalAlignment="Center"/>
+                        <ui:TinyNumericUpDown x:Name="LineStepNud" Minimum="1" Maximum="1000"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="GIF export scale:" Width="160" VerticalAlignment="Center"/>
+                        <ui:TinyNumericUpDown x:Name="GifScaleNud" Minimum="1" Maximum="32"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0,12,0,0">
+            <Button x:Name="OkBtn" Content="OK" IsDefault="True" Width="110"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <Button x:Name="CancelBtn" Content="Cancel" IsCancel="True" Width="110"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+</Window>
